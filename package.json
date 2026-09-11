@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "images": "node scripts/images.mjs"
   },
   "dependencies": {
     "next": "^15.5.0",
@@ -13,10 +14,12 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@fontsource/onest": "^5.3.1",
     "@tailwindcss/postcss": "^4.1.0",
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "satori": "^0.33.4",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.9.0"
   }

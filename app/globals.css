@@ -30,6 +30,9 @@
   --color-lime-deep: #79b02f; /* hover/active кнопки */
   --color-wood-deep: #966d43;
 
+  /* Ошибки валидации формы. Функциональный цвет, не декоративный. */
+  --color-error: #a8321e;
+
   /* ---------- Типографика ----------
      Шкала жёсткая: 14 / 16 / 18 / 24 / 32 / 48 / 72.
      Имена = размер в px, чтобы `text-32 md:text-48 lg:text-72`
@@ -110,7 +113,7 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     /* Липкая панель на мобильном не должна перекрывать футер. */
-    padding-bottom: var(--mobile-bar-h);
+    padding-bottom: calc(var(--mobile-bar-h) + env(safe-area-inset-bottom));
   }
 
   @media (min-width: 1024px) {
@@ -141,9 +144,31 @@
     outline-offset: 2px;
   }
 
+  summary {
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
   /* Цифры в таблицах цен и сроков — моноширинные по ширине. */
   .tnum {
     font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Штриховка заглушек под фото. Цвет штриха — через --hatch. */
+@utility placeholder-hatch {
+  background-image: repeating-linear-gradient(135deg, transparent 0 11px, var(--hatch) 11px 12px);
+}
+
+/* Горизонтальные ленты: скроллбар прячем, листание — свайпом и стрелками. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 

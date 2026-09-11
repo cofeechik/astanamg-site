@@ -1,12 +1,16 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Onest } from 'next/font/google';
+import { Footer } from '@/components/layout/Footer';
+import { Header } from '@/components/layout/Header';
+import { MobileBar } from '@/components/layout/MobileBar';
 import { homeMeta } from '@/content/meta';
+import { ui } from '@/content/ui';
 import { SITE_URL } from '@/lib/company';
 import './globals.css';
 
 const onest = Onest({
   subsets: ['latin', 'cyrillic'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600'],
   display: 'swap',
   variable: '--font-onest',
 });
@@ -34,10 +38,25 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: '#FFFFFF',
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className={onest.variable}>
-      <body>{children}</body>
+      <body>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-sm focus:bg-lime focus:px-4 focus:py-3 focus:text-ink"
+        >
+          {ui.skipLink}
+        </a>
+        <Header />
+        <main id="main">{children}</main>
+        <Footer />
+        <MobileBar />
+      </body>
     </html>
   );
 }

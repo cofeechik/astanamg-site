@@ -12,6 +12,7 @@ export const nav = [
 
 export const header = {
   cta: 'Рассчитать стоимость',
+  ctaHref: '/#contacts',
   logoAlt: 'Astana Mebel Group — мебель на заказ в Астане',
 } as const;
 

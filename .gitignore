@@ -1,0 +1,18 @@
+# зависимости и сборка
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# окружение и логи
+.env*
+*.log
+
+# системное и локальные настройки инструментов
+.DS_Store
+Thumbs.db
+.claude/
+
+# оригиналы фото не храним — только webp в public/images
+.image-cache/

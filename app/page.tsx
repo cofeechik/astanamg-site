@@ -1,4 +1,5 @@
 import { Catalog } from '@/components/sections/Catalog';
+import { Faq } from '@/components/sections/Faq';
 import { Hero } from '@/components/sections/Hero';
 import { Pricing } from '@/components/sections/Pricing';
 import { Process } from '@/components/sections/Process';
@@ -14,6 +15,7 @@ export default function HomePage() {
       <Pricing />
       <Process />
       <Production />
+      <Faq />
     </>
   );
 }

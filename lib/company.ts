@@ -43,7 +43,9 @@ export const COMPANY = {
  * hero, проекты, цены, FAQ, договорные тексты.
  * Другой формулировки на сайте быть не должно.
  */
-export const LEAD_TIME = 'от 21 до 35 рабочих дней';
+export const LEAD_TIME_DAYS = 'от 21 до 35';
+
+export const LEAD_TIME = `${LEAD_TIME_DAYS} рабочих дней`;
 
 /**
  * Опыт считается от текущего года, а не зашит числом.

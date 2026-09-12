@@ -4,9 +4,10 @@ import { tier, type TierId } from './pricing';
 /*
  * TODO: ЧЕРНОВИК — данные кейсов не сверены с клиентом.
  * - тип и материал определены по фотографиям;
- * - цена — нижняя граница уровня фасадов из pricing.ts, а не реальная смета проекта;
+ * - цена — нижняя граница уровня фасадов из pricing.ts, а не смета проекта;
  *   для мягкой мебели, металла и торгового оборудования фасадные уровни неприменимы — цены нет;
- * - площадь и дата реализации НЕ заполнены намеренно, выдумывать их нельзя.
+ * - площадь и дата реализации НЕ заполнены намеренно, выдумывать их нельзя;
+ *   незаполненные поля карточка не показывает вовсе.
  * Пока флаг draft = true, над лентой висит баннер «ЧЕРНОВИК». Снять после сверки.
  */
 
@@ -33,9 +34,6 @@ export const projects = {
   eyebrow: 'Проекты',
   title: 'Недавние работы',
   lead: 'Квартиры, салоны, кафе и магазины в Астане. Каждый проект — по индивидуальным размерам.',
-  allLabel: 'Все проекты',
-  // TODO: страницы /projects пока нет — ведём в Instagram, где клиент публикует работы.
-  allHref: 'https://instagram.com/astanamg.kz',
   labels: {
     area: 'Площадь',
     material: 'Материал',
@@ -43,9 +41,30 @@ export const projects = {
     price: 'Цена',
     priceUnit: '/п.м.',
     priceByEstimate: 'По смете после замера',
-    empty: '—',
   },
   items: [
+    {
+      id: 'kitchen-loft',
+      title: 'Кухня в декоре бетона с деревянной столешницей',
+      image: '/images/projects/kitchen-loft.webp',
+      alt: 'Прямая кухня с матовыми фасадами в декоре бетона, деревянной столешницей и фартуком, встроенной техникой и чёрной вытяжкой',
+      material: 'Фасады в декоре бетона, столешница под дерево',
+      area: null,
+      completed: null,
+      leadTime: LEAD_TIME,
+      priceFrom: fromTier('ldsp'),
+    },
+    {
+      id: 'wardrobe-fluted',
+      title: 'Шкаф с фрезерованными фасадами и витриной',
+      image: '/images/projects/wardrobe-fluted.webp',
+      alt: 'Светлый шкаф до потолка с фрезерованными фасадами, длинными чёрными ручками и застеклённой секцией с подсветкой полок',
+      material: 'Крашеный МДФ с фрезеровкой, стекло, подсветка',
+      area: null,
+      completed: null,
+      leadTime: LEAD_TIME,
+      priceFrom: fromTier('mdf-paint'),
+    },
     {
       id: 'hallway',
       title: 'Прихожая с системой хранения до потолка',
@@ -80,33 +99,11 @@ export const projects = {
       priceFrom: fromTier('ldsp'),
     },
     {
-      id: 'cafe-sofas',
-      title: 'Диваны для зала кафе',
-      image: '/images/projects/cafe-sofas.webp',
-      alt: 'Серые диваны с вертикальной стёжкой друг напротив друга и стол с деревянной столешницей на чёрной опоре',
-      material: 'Мягкие диваны с вертикальной стёжкой, стол на металлической опоре',
-      area: null,
-      completed: null,
-      leadTime: LEAD_TIME,
-      priceFrom: null,
-    },
-    {
       id: 'shop-racks',
       title: 'Торговые стеллажи для магазина',
       image: '/images/projects/shop-racks.webp',
       alt: 'Островные стеллажи из фанеры на чёрном металлическом каркасе и настенные полки в торговом зале',
       material: 'Фанера, металлический каркас',
-      area: null,
-      completed: null,
-      leadTime: LEAD_TIME,
-      priceFrom: null,
-    },
-    {
-      id: 'terrace',
-      title: 'Мебель для летней террасы',
-      image: '/images/projects/terrace.webp',
-      alt: 'Скамьи и стол из сосновой доски на чёрном металлическом каркасе у входа в кафе, ещё в защитной плёнке',
-      material: 'Сосна, металлический каркас',
       area: null,
       completed: null,
       leadTime: LEAD_TIME,

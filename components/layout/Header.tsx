@@ -19,6 +19,7 @@ export function Header() {
             width={400}
             height={164}
             priority
+            unoptimized
             className="h-10 w-auto lg:h-12"
           />
         </Link>

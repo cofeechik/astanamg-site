@@ -11,34 +11,34 @@ const CACHE = '.image-cache';
 const OUT = 'public/images';
 const QUALITY = 82;
 
-// width — максимальная ширина; меньшие оригиналы не увеличиваем.
+// max — потолок ширины для слота; каждый кадр режется в 480/960/1440, но не больше max и не больше оригинала.
 const JOBS = [
-  // Hero: арт-дирекшн — два разных кадра из одного снимка.
-  { src: '203.jpg', out: 'hero/hero-desktop.webp', width: 1920, extract: { left: 0, top: 100, width: 1920, height: 1080 } },
-  { src: '203.jpg', out: 'hero/hero-mobile.webp', width: 960, extract: { left: 640, top: 0, width: 1024, height: 1280 } },
+  // Hero: арт-дирекшн — два кадра из одного снимка зала кафе (855).
+  { src: '855.jpg', out: 'hero/hero-desktop.webp', max: 1440, quality: 78, extract: { left: 0, top: 240, width: 1200, height: 675 } },
+  { src: '855.jpg', out: 'hero/hero-mobile.webp', max: 780, quality: 76, extract: { left: 120, top: 0, width: 960, height: 1200 } },
 
   // Каталог: три крупные карточки.
-  { src: '205.jpg', out: 'catalog/kitchens.webp', width: 1280 },
-  { src: '206.jpg', out: 'catalog/bedrooms.webp', width: 1080 },
-  { src: '209-1.jpg', out: 'catalog/wardrobes.webp', width: 1080 },
+  { src: '205.jpg', out: 'catalog/kitchens.webp', max: 1440 },
+  { src: '206.jpg', out: 'catalog/bedrooms.webp', max: 1440 },
+  { src: '209-1.jpg', out: 'catalog/wardrobes.webp', max: 1440 },
   // Каталог: компактные строки.
-  { src: '212.webp', out: 'catalog/kids.webp', width: 480 }, // детская — не путать с 212.jpg
-  { src: '208.jpg', out: 'catalog/living.webp', width: 480 },
-  { src: '207.png', out: 'catalog/sofas.webp', width: 480 },
-  { src: '212.jpg', out: 'catalog/offices.webp', width: 480 }, // офис — не путать с 212.webp
-  { src: '211.jpg', out: 'catalog/cafe.webp', width: 480 },
-  { src: '210.jpg', out: 'catalog/retail.webp', width: 480 },
+  { src: '212.webp', out: 'catalog/kids.webp', max: 480 }, // детская — не путать с 212.jpg
+  { src: '208.jpg', out: 'catalog/living.webp', max: 480 },
+  { src: '207.png', out: 'catalog/sofas.webp', max: 480 },
+  { src: '212.jpg', out: 'catalog/offices.webp', max: 480 }, // офис — не путать с 212.webp
+  { src: '211.jpg', out: 'catalog/cafe.webp', max: 480 },
+  { src: '210.jpg', out: 'catalog/retail.webp', max: 480 },
 
   // Проекты.
-  { src: '829.jpg', out: 'projects/hallway.webp', width: 720 },
-  { src: '844.jpg', out: 'projects/reception.webp', width: 720 },
-  { src: '852.jpg', out: 'projects/nail-salon.webp', width: 720 },
-  { src: '855.jpg', out: 'projects/cafe-sofas.webp', width: 720 },
-  { src: '846.jpg', out: 'projects/shop-racks.webp', width: 880 },
-  { src: '850.jpg', out: 'projects/terrace.webp', width: 720 },
+  { src: '809-1.jpg', out: 'projects/kitchen-loft.webp', max: 800, quality: 78 },
+  { src: '828-1.jpg', out: 'projects/wardrobe-fluted.webp', max: 800, quality: 78 },
+  { src: '829.jpg', out: 'projects/hallway.webp', max: 800, quality: 78 },
+  { src: '844.jpg', out: 'projects/reception.webp', max: 800, quality: 78 },
+  { src: '852.jpg', out: 'projects/nail-salon.webp', max: 800, quality: 78 },
+  { src: '846.jpg', out: 'projects/shop-racks.webp', max: 800, quality: 78 },
 
   // Логотип — только для светлого фона (градиент, тень, белая обводка).
-  { src: 'logo-3-1024x420.png', out: 'logo.webp', width: 400, quality: 90, alpha: true },
+  { src: 'logo-3-1024x420.png', out: 'logo.webp', max: 400, quality: 90, alpha: true, responsive: false },
 ];
 
 async function original(name) {
@@ -58,14 +58,28 @@ function report(name, info) {
   console.log(`${name.padEnd(30)} ${`${info.width}×${info.height}`.padEnd(10)} ${Math.round(info.size / 1024)} КБ`);
 }
 
+const WIDTHS = [480, 960, 1440];
+
 async function convert(job) {
-  let img = sharp(await original(job.src));
-  if (job.extract) img = img.extract(job.extract);
-  img = img.resize({ width: job.width, withoutEnlargement: true });
-  if (!job.alpha) img = img.flatten({ background: '#ffffff' });
-  const dest = path.join(OUT, job.out);
-  await fs.mkdir(path.dirname(dest), { recursive: true });
-  report(job.out, await img.webp({ quality: job.quality ?? QUALITY, effort: 6 }).toFile(dest));
+  const source = await original(job.src);
+  const meta = await sharp(source).metadata();
+  // Ширина кадра после кропа — апскейлить нельзя.
+  const available = job.extract ? job.extract.width : meta.width;
+  const cap = Math.min(job.max, available);
+  const targets = job.responsive === false ? [{ name: job.out, width: cap }] : WIDTHS.map((w) => ({
+    name: job.out.replace(/.webp$/, `-${w}.webp`),
+    width: Math.min(w, cap),
+  }));
+
+  for (const target of targets) {
+    let img = sharp(source);
+    if (job.extract) img = img.extract(job.extract);
+    img = img.resize({ width: target.width, withoutEnlargement: true });
+    if (!job.alpha) img = img.flatten({ background: '#ffffff' });
+    const dest = path.join(OUT, target.name);
+    await fs.mkdir(path.dirname(dest), { recursive: true });
+    report(target.name, await img.webp({ quality: job.quality ?? QUALITY, effort: 6 }).toFile(dest));
+  }
 }
 
 // ---------- og:image 1200×630 ----------

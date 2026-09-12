@@ -5,9 +5,11 @@ const nextConfig: NextConfig = {
   output: 'export',
   trailingSlash: true,
   images: {
-    // Обязательно при output: 'export' — оптимизатор Next требует рантайм.
-    // Готовим изображения заранее (webp/avif) на этапе подготовки контента.
-    unoptimized: true,
+    // Оптимизатора на сервере нет: ширины нарезаются заранее (npm run images),
+    // а загрузчик выбирает нужную. Логотип идёт с unoptimized — он один на все экраны.
+    loader: 'custom',
+    loaderFile: './lib/imageLoader.ts',
+    deviceSizes: [480, 960, 1440],
   },
 };
 

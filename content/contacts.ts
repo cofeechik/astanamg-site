@@ -1,28 +1,35 @@
+import { COMPANY, SITE_URL } from '@/lib/company';
 import { catalog } from './catalog';
 
 export const contacts = {
   eyebrow: 'Контакты',
   title: 'Рассчитаем стоимость',
-  lead: 'Оставьте телефон — перезвоним, уточним задачу и договоримся о бесплатном замере. Или напишите в WhatsApp с фото помещения.',
+  lead: 'Заполните три поля — заявка уйдёт нам в WhatsApp, останется только нажать «отправить». Уточним задачу и договоримся о бесплатном замере.',
   form: {
     type: {
       label: 'Тип мебели',
       placeholder: 'Выберите направление',
-      options: [...catalog.all.map((item) => ({ value: item.id, label: item.formLabel })), { value: 'other', label: 'Другое' }],
+      options: [
+        ...catalog.all.map((item) => ({ value: item.id, label: item.formLabel })),
+        { value: 'other', label: 'Другое' },
+      ],
     },
     name: { label: 'Имя', placeholder: 'Как к вам обращаться' },
     phone: { label: 'Телефон', placeholder: '+7 700 000 00 00' },
-    submit: 'Отправить заявку',
+    submit: 'Отправить в WhatsApp',
     // TODO: страницы политики конфиденциальности пока нет — добавить ссылку.
     consent: 'Нажимая кнопку, вы соглашаетесь на обработку персональных данных.',
+    /** Текст, который подставляется в WhatsApp. */
+    message: (v: { type: string; name: string; phone: string }) =>
+      `Заявка с сайта ${SITE_URL.replace('https://', '')}\nТип мебели: ${v.type}\nИмя: ${v.name}\nТелефон: ${v.phone}`,
     success: {
-      title: 'Заявка принята',
-      text: 'Перезвоним и договоримся о времени замера.',
+      title: 'Открываем WhatsApp',
+      text: `Если приложение не открылось — позвоните, ответим сразу: ${COMPANY.phone.display}`,
     },
     errors: {
       type: 'Выберите тип мебели',
       name: 'Укажите имя',
-      phone: 'Проверьте номер: нужно 11 цифр, начиная с +7',
+      phone: 'Проверьте номер: +7 и 10 цифр',
     },
   },
   details: {
